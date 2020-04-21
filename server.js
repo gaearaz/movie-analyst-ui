@@ -1,7 +1,7 @@
 // Declare our dependencies
 var express = require('express');
 var request = require('superagent');
-var backendHost = process.env.BACK_HOST  || '172.31.37.30' || 'localhost'; //Burned variable for limited time
+var backendHost = process.env.BACK_HOST || '172.31.37.30' || 'localhost'; //Burned variable for limited time
 // Create our express app
 var app = express();
 
@@ -23,9 +23,9 @@ app.get('/', function (req, res) {
 // Once the request is sent out, our API will validate that the access_token has the right scope to request the /movies resource and if it does, will return the movie data. We’ll take this movie data, and pass it alongside our movies.ejs template for rendering
 app.get('/movies', function (req, res) {
   request
-  .get('http://' + backendHost + ':3000/movies')
-  .end(function (err, data) {
-        try {
+    .get('http://' + backendHost + ':3000/movies')
+    .end(function (err, data) {
+      try {
         if (data.status == 403) {
           res.send(403, '403 Forbidden');
         } else {
@@ -37,63 +37,61 @@ app.get('/movies', function (req, res) {
         console.log(err);
       }
 
-      })
+    })
 })
 
 // The process will be the same for the remaining routes. We’ll make sure to get the acess_token first and then make the request to our API to get the data.
 // The key difference on the authors route, is that for our client, we’re naming the route /authors, but our API endpoint is /reviewers. Our route on the client does not have to match the API endpoint route.
 app.get('/authors', function (req, res) {
-  try {
-    request
-      .get('http://' + backendHost + ':3000/reviewers')
-      .set('Authorization', 'Bearer ' + req.access_token)
-      .end(function (err, data) {
+  request
+    .get('http://' + backendHost + ':3000/reviewers')
+    .set('Authorization', 'Bearer ' + req.access_token)
+    .end(function (err, data) {
+      try {
         if (data.status == 403) {
           res.send(403, '403 Forbidden');
         } else {
           var authors = data.body;
           res.render('authors', { authors: authors });
         }
-
-      })
-  }
-  catch (err) {
-    console.log(err);
-  }
+      }
+      catch (err) {
+        console.log(err);
+      }
+    })
 })
 
 app.get('/publications', function (req, res) {
-  try {
-    request
-      .get('http://' + backendHost + ':3000/publications')
+  request
+    .get('http://' + backendHost + ':3000/publications')
     .end(function (err, data) {
-      if (data.status == 403) {
-        res.send(403, '403 Forbidden');
-      } else {
-        var publications = data.body;
-        res.render('publications', { publications: publications });
+      try {
+        if (data.status == 403) {
+          res.send(403, '403 Forbidden');
+        } else {
+          var publications = data.body;
+          res.render('publications', { publications: publications });
+        }
+      } catch (err) {
+        console.log(err);
       }
     }
     )
-  } catch (err) {
-    console.log(err);
-  }
 })
 
 // We’ve added the pending route, but calling this route from the MovieAnalyst Website will always result in a 403 Forbidden error as this client does not have the admin scope required to get the data.
 app.get('/pending', function (req, res) {
-  try {
-    request
-      .get('http://' + backendHost + ':3000/pending')
-      .end(function (err, data) {
-
+  request
+    .get('http://' + backendHost + ':3000/pending')
+    .end(function (err, data) {
+      try {
         if (data.status == 403) {
           res.send(403, '403 Forbidden');
         }
-      })
-  } catch (err) {
-    console.log(err);
-  }
+      } catch (err) {
+        console.log(err);
+      }
+    })
 })
 
 app.listen(3030);
