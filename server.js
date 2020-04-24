@@ -1,7 +1,9 @@
 // Declare our dependencies
 var express = require('express');
 var request = require('superagent');
-var backendHost = process.env.BACK_HOST || '172.31.37.30' || 'localhost'; //Burned variable for limited time
+const dotenv = require('dotenv');
+dotenv.config();
+var backendHost = process.env.BACK_HOST; //Burned variable for limited time
 // Create our express app
 var app = express();
 
