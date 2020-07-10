@@ -4,7 +4,7 @@
   "description": "ui for the movie analyst website....im totally not ripping this off.......",
   "scripts": {
     "test": "mocha",
-    "build": "node server.js"
+    "build": "nohup node server.js > output.log &"
   },
   "repository": {
     "type": "git",
