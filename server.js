@@ -4,7 +4,7 @@ var request = require('superagent');
 const dotenv = require('dotenv');
 dotenv.config();
 var backendHost = process.env.BACK_HOST; 
-var backendPort = process.env.BACK_PORT; //last port local was 8080-not updated in dockerimage yet
+var backendPort = process.env.BACK_PORT; 
 // Create our express app
 var app = express();
 
@@ -29,7 +29,6 @@ app.get('/movies', function (req, res) {
     .get('http://' + backendHost + ':'+backendPort+'/movies')
     .end(function (err, data) {
       try {
-
         if (data.status == 403) {
           res.send(403, '403 Forbidden');
 
